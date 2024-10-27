@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vita-Track-Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f1a0c8f2e9552c445d1d8272255df7e42b7a5150")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vita-Track-Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vita-Track-Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

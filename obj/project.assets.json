@@ -2564,6 +2564,7 @@
       "EntityFramework >= 6.5.1",
       "Microsoft.EntityFrameworkCore.InMemory >= 8.0.10",
       "Microsoft.IdentityModel.Tokens >= 8.1.2",
+      "MongoDB.Bson >= 3.0.0",
       "MongoDB.Driver >= 3.0.0",
       "Newtonsoft.Json >= 13.0.3",
       "Swashbuckle.AspNetCore >= 6.4.0"
@@ -2617,6 +2618,10 @@
           "Microsoft.IdentityModel.Tokens": {
             "target": "Package",
             "version": "[8.1.2, )"
+          },
+          "MongoDB.Bson": {
+            "target": "Package",
+            "version": "[3.0.0, )"
           },
           "MongoDB.Driver": {
             "target": "Package",
