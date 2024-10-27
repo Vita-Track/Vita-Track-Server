@@ -1,0 +1,6 @@
+@Vita_Track_Server_HostAddress = http://localhost:5211
+
+GET {{Vita_Track_Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
