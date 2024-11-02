@@ -37,6 +37,23 @@ namespace Vita_Track_Server.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        [HttpPost("register-patient")]
+        public async Task<IActionResult> RegisterPatient([FromBody] PatientModel patient)
+        {
+            try
+            {
+                await _mongoDBServices.RegisterPatient(patient);
+                return Ok(new { message = "Patient registered successfully" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
         [HttpPost("doctor-login")]
         public async Task<IActionResult> DoctorLogin([FromBody] LoginPayload loginPayload)
@@ -50,15 +67,15 @@ namespace Vita_Track_Server.Controllers
                 }
                 Console.WriteLine(loginPayload.Email);
                 var retrievedUser = await _mongoDBServices.DoctorLogin(loginPayload.Email, loginPayload.Password);
-                Console.WriteLine(retrievedUser.FirstName);
-                Console.WriteLine(retrievedUser.LastName);
-                Console.WriteLine(retrievedUser.Email);
-                Console.WriteLine(retrievedUser.Phone);
-                Console.WriteLine(retrievedUser.ClinicAddress);
-                Console.WriteLine(retrievedUser.Specialization);
-                Console.WriteLine(retrievedUser.DateOfBirth);
-                Console.WriteLine(retrievedUser.Experience);
-                Console.WriteLine(retrievedUser.LicenseNumber);
+                // Console.WriteLine(retrievedUser.FirstName);
+                // Console.WriteLine(retrievedUser.LastName);
+                // Console.WriteLine(retrievedUser.Email);
+                // Console.WriteLine(retrievedUser.Phone);
+                // Console.WriteLine(retrievedUser.ClinicAddress);
+                // Console.WriteLine(retrievedUser.Specialization);
+                // Console.WriteLine(retrievedUser.DateOfBirth);
+                // Console.WriteLine(retrievedUser.Experience);
+                // Console.WriteLine(retrievedUser.LicenseNumber);
 
                 DoctorDataForJWT doctorDataForJWT = new()
                 {
@@ -74,12 +91,52 @@ namespace Vita_Track_Server.Controllers
                     LicenseNumber = retrievedUser.LicenseNumber
                 };
 
-                var tk = _iJWTAuth.JWTTokenAuth(doctorDataForJWT);
-                Console.WriteLine(tk);
+                // var tk = _iJWTAuth.JWTTokenAuth(doctorDataForJWT);
+                // Console.WriteLine(tk);
                 return Ok(new
                 {
                     message = "Doctor logged in successfully",
                     token = _iJWTAuth.JWTTokenAuth(doctorDataForJWT)
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        [HttpPost("patient-login")]
+        public async Task<IActionResult> PatientLogin([FromBody] LoginPayload loginPayload)
+        {
+            try
+            {
+                Console.WriteLine("Patient Login");
+                if (loginPayload.Email == null || loginPayload.Password == null)
+                {
+                    throw new Exception("Email and password are required");
+                }
+                var retrievedUser = await _mongoDBServices.PatientLogin(loginPayload.Email, loginPayload.Password);
+                // Console.WriteLine(retrievedUser.FirstName);
+                // Console.WriteLine(retrievedUser.LastName);
+                // Console.WriteLine(retrievedUser.Email);
+                // Console.WriteLine(retrievedUser.Phone);
+                // Console.WriteLine(retrievedUser.DateOfBirth);
+                PatientDataForJWT patientDataForJWT = new()
+                {
+                    Id = retrievedUser.Id,
+                    FirstName = retrievedUser.FirstName,
+                    LastName = retrievedUser.LastName,
+                    Email = retrievedUser.Email,
+                    Phone = retrievedUser.Phone,
+                    DateOfBirth = retrievedUser.DateOfBirth
+                };
+                return Ok(new
+                {
+                    message = "Patient logged in successfully",
+                    token = _iJWTAuth.JWTTokenAuthPatient(patientDataForJWT)
                 });
             }
             catch (InvalidOperationException ex)

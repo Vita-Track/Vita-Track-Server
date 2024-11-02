@@ -37,4 +37,28 @@ public class Authentication(IAuthentication context) : IJWTAuth
         var token = tokenHandler.CreateToken(tokenGenerator);
         return tokenHandler.WriteToken(token);
     }
+    public string JWTTokenAuthPatient(PatientDataForJWT patientDataForJWT)
+    {
+        var key = _context.Key;
+        var issuer = _context.Issuer;
+        var tokenGenerator = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(
+            [
+                new Claim("Id", patientDataForJWT.Id!),
+                new Claim("FirstName", patientDataForJWT.FirstName!),
+                new Claim("LastName", patientDataForJWT.LastName!),
+                new Claim("Email", patientDataForJWT.Email!),
+                new Claim("Phone", patientDataForJWT.Phone!),
+                new Claim("DateOfBirth", patientDataForJWT.DateOfBirth!)
+            ]),
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!)), SecurityAlgorithms.HmacSha256Signature),
+            Issuer = issuer,
+            Audience = issuer
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenGenerator);
+        return tokenHandler.WriteToken(token);
+    }
 }
