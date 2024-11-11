@@ -9,6 +9,11 @@ namespace Vita_Track_Server.Controllers
         public string? Email { get; set; }
         public string? Password { get; set; }
     }
+    public class AssociationPayload
+    {
+        public string? DoctorId { get; set; }
+        public string? PatientId { get; set; }
+    }
     [Route("api/[controller]")]
     public class MainController(MongoDBServices mongoDBServices, IJWTAuth iJWTAuth) : Controller
     {
@@ -138,6 +143,23 @@ namespace Vita_Track_Server.Controllers
                     message = "Patient logged in successfully",
                     token = _iJWTAuth.JWTTokenAuthPatient(patientDataForJWT)
                 });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        [HttpPost("create-association")]
+        public async Task<IActionResult> AssociateDoctor([FromBody] AssociationPayload associationPayload)
+        {
+            try
+            {
+                await _mongoDBServices.AssociateDoctor(associationPayload.DoctorId, associationPayload.PatientId);
+                return Ok(new { message = "Doctor and Patient associated successfully" });
             }
             catch (InvalidOperationException ex)
             {

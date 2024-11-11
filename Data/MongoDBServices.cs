@@ -33,6 +33,7 @@ namespace Vita_Track_Server.Data
                 throw new Exception("Doctor with this email already exists");
             }
             doctor.Password = BCrypt.Net.BCrypt.HashPassword(doctor.Password);
+            doctor.AssociatedPatients = [];
             await _doctorCollection.InsertOneAsync(doctor);
         }
         public async Task<DoctorModel> DoctorLogin(string? email, string? password)
@@ -52,8 +53,10 @@ namespace Vita_Track_Server.Data
                 throw new Exception("Patient with this email already exists");
             }
             patient.Password = BCrypt.Net.BCrypt.HashPassword(patient.Password);
+            patient.AssociatedDoctors = [];
             await _patientCollection.InsertOneAsync(patient);
         }
+
         public async Task<PatientModel> PatientLogin(string? email, string? password)
         {
             var patientExists = await _patientCollection.Find(x => x.Email == email).FirstOrDefaultAsync() ?? throw new Exception("Patient with this email does not exist");
@@ -62,6 +65,30 @@ namespace Vita_Track_Server.Data
                 throw new Exception("Invalid password");
             }
             return patientExists;
+        }
+        public async Task AssociateDoctor(string? doctorId, string? patientId)
+        {
+            var doctor = await _doctorCollection.Find(d => d.Id == doctorId).FirstOrDefaultAsync() ?? throw new Exception("Doctor not found");
+            var patient = await _patientCollection.Find(p => p.Id == patientId).FirstOrDefaultAsync() ?? throw new Exception("Patient not found");
+
+            // Check if association already exists
+            if (doctor.AssociatedPatients == null) doctor.AssociatedPatients = new List<PatientModel>();
+            if (patient.AssociatedDoctors == null) patient.AssociatedDoctors = new List<DoctorModel>();
+
+            bool isDoctorAlreadyAssociated = doctor.AssociatedPatients.Exists(p => p.Id == patientId);
+            bool isPatientAlreadyAssociated = patient.AssociatedDoctors.Exists(d => d.Id == doctorId);
+
+            if (!isDoctorAlreadyAssociated)
+            {
+                doctor.AssociatedPatients.Add(patient);
+                await _doctorCollection.ReplaceOneAsync(d => d.Id == doctorId, doctor);
+            }
+
+            if (!isPatientAlreadyAssociated)
+            {
+                patient.AssociatedDoctors.Add(doctor);
+                await _patientCollection.ReplaceOneAsync(p => p.Id == patientId, patient);
+            }
         }
     }
 }

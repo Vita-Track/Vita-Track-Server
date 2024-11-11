@@ -1,3 +1,5 @@
+using Vita_Track_Server.Models;
+
 namespace Vita_Track_Server;
 
 public class DoctorDataForJWT
@@ -12,6 +14,7 @@ public class DoctorDataForJWT
     public string? DateOfBirth { get; set; }
     public string? Experience { get; set; }
     public string? LicenseNumber { get; set; }
+    public List<PatientModel>? AssociatedPatients { get; set; }
 }
 public class PatientDataForJWT
 {
@@ -21,6 +24,8 @@ public class PatientDataForJWT
     public string? Email { get; set; }
     public string? Phone { get; set; }
     public string? DateOfBirth { get; set; }
+
+    public List<DoctorModel>? AssociatedDoctors { get; set; }
 }
 public interface IJWTAuth
 {

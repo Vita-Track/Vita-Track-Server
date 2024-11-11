@@ -25,7 +25,7 @@ public class Authentication(IAuthentication context) : IJWTAuth
                 new Claim("Specialization", doctorDataForJWT.Specialization!),
                 new Claim("DateOfBirth", doctorDataForJWT.DateOfBirth!),
                 new Claim("Experience", doctorDataForJWT.Experience!),
-                new Claim("LicenseNumber", doctorDataForJWT.LicenseNumber!)
+                new Claim("LicenseNumber", doctorDataForJWT.LicenseNumber!),
             ]),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!)), SecurityAlgorithms.HmacSha256Signature),
