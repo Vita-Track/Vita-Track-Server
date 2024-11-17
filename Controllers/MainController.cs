@@ -45,6 +45,7 @@ namespace Vita_Track_Server.Controllers
         [HttpPost("register-patient")]
         public async Task<IActionResult> RegisterPatient([FromBody] PatientModel patient)
         {
+
             try
             {
                 await _mongoDBServices.RegisterPatient(patient);
@@ -116,6 +117,8 @@ namespace Vita_Track_Server.Controllers
         [HttpPost("patient-login")]
         public async Task<IActionResult> PatientLogin([FromBody] LoginPayload loginPayload)
         {
+            Console.WriteLine(loginPayload.Email);
+            Console.WriteLine(loginPayload.Password);
             try
             {
                 Console.WriteLine("Patient Login");
@@ -153,9 +156,39 @@ namespace Vita_Track_Server.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        [HttpGet("all-doctors")]
+        public async Task<IActionResult> GetAllDoctors()
+        {
+            try
+            {
+                var doctors = await _mongoDBServices.GetAllDoctors();
+                Console.WriteLine(doctors);
+                return Ok(doctors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("all-patients")]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            try
+            {
+                var patients = await _mongoDBServices.GetAllPatients();
+                return Ok(patients);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
         [HttpPost("create-association")]
         public async Task<IActionResult> AssociateDoctor([FromBody] AssociationPayload associationPayload)
         {
+            Console.WriteLine(associationPayload.DoctorId);
+            Console.WriteLine(associationPayload.PatientId);
             try
             {
                 await _mongoDBServices.AssociateDoctor(associationPayload.DoctorId, associationPayload.PatientId);

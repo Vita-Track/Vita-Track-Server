@@ -66,6 +66,17 @@ namespace Vita_Track_Server.Data
             }
             return patientExists;
         }
+        public async Task<List<DoctorModel>> GetAllDoctors()
+        {
+            return await _doctorCollection.Find(_ => true).ToListAsync();
+        }
+
+        // New method to get all patients
+        public async Task<List<PatientModel>> GetAllPatients()
+        {
+            return await _patientCollection.Find(_ => true).ToListAsync();
+        }
+
         public async Task AssociateDoctor(string? doctorId, string? patientId)
         {
             var doctor = await _doctorCollection.Find(d => d.Id == doctorId).FirstOrDefaultAsync() ?? throw new Exception("Doctor not found");

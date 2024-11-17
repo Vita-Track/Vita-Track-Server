@@ -16,7 +16,7 @@ namespace Vita_Track_Server.Models
         public string? LastName { get; set; }
         [JsonProperty("email")]
         public string? Email { get; set; }
-        [JsonProperty("phoneNumber")]
+        [JsonProperty("phone")]
         public string? Phone { get; set; }
         [JsonProperty("dateOfBirth")]
         public string? DateOfBirth { get; set; }
