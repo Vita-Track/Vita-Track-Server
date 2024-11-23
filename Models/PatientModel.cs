@@ -23,6 +23,6 @@ namespace Vita_Track_Server.Models
         [JsonProperty("password")]
         public string? Password { get; set; }
         [JsonProperty("associatedDoctors")]
-        public List<DoctorModel>? AssociatedDoctors { get; set; }
+        public List<string>? AssociatedDoctors { get; set; }
     }
 }

@@ -94,7 +94,8 @@ namespace Vita_Track_Server.Controllers
                     Specialization = retrievedUser.Specialization,
                     DateOfBirth = retrievedUser.DateOfBirth,
                     Experience = retrievedUser.Experience,
-                    LicenseNumber = retrievedUser.LicenseNumber
+                    LicenseNumber = retrievedUser.LicenseNumber,
+                    AssociatedPatients = retrievedUser.AssociatedPatients
                 };
 
                 // var tk = _iJWTAuth.JWTTokenAuth(doctorDataForJWT);
@@ -139,7 +140,8 @@ namespace Vita_Track_Server.Controllers
                     LastName = retrievedUser.LastName,
                     Email = retrievedUser.Email,
                     Phone = retrievedUser.Phone,
-                    DateOfBirth = retrievedUser.DateOfBirth
+                    DateOfBirth = retrievedUser.DateOfBirth,
+                    AssociatedDoctors = retrievedUser.AssociatedDoctors
                 };
                 return Ok(new
                 {

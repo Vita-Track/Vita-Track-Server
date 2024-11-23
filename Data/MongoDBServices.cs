@@ -82,24 +82,23 @@ namespace Vita_Track_Server.Data
             var doctor = await _doctorCollection.Find(d => d.Id == doctorId).FirstOrDefaultAsync() ?? throw new Exception("Doctor not found");
             var patient = await _patientCollection.Find(p => p.Id == patientId).FirstOrDefaultAsync() ?? throw new Exception("Patient not found");
 
-            // Check if association already exists
-            if (doctor.AssociatedPatients == null) doctor.AssociatedPatients = new List<PatientModel>();
-            if (patient.AssociatedDoctors == null) patient.AssociatedDoctors = new List<DoctorModel>();
+            // Check if the association lists are null and initialize if needed
+            if (doctor.AssociatedPatients == null) doctor.AssociatedPatients = new List<string>();
+            if (patient.AssociatedDoctors == null) patient.AssociatedDoctors = new List<string>();
 
-            bool isDoctorAlreadyAssociated = doctor.AssociatedPatients.Exists(p => p.Id == patientId);
-            bool isPatientAlreadyAssociated = patient.AssociatedDoctors.Exists(d => d.Id == doctorId);
-
-            if (!isDoctorAlreadyAssociated)
+            // Check if the IDs are already associated
+            if (!doctor.AssociatedPatients.Contains(patientId!))
             {
-                doctor.AssociatedPatients.Add(patient);
+                doctor.AssociatedPatients.Add(patientId!);
                 await _doctorCollection.ReplaceOneAsync(d => d.Id == doctorId, doctor);
             }
 
-            if (!isPatientAlreadyAssociated)
+            if (!patient.AssociatedDoctors.Contains(doctorId!))
             {
-                patient.AssociatedDoctors.Add(doctor);
+                patient.AssociatedDoctors.Add(doctorId!);
                 await _patientCollection.ReplaceOneAsync(p => p.Id == patientId, patient);
             }
         }
+
     }
 }

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Vita_Track_Server;
 
 public class Authentication(IAuthentication context) : IJWTAuth
@@ -12,6 +13,8 @@ public class Authentication(IAuthentication context) : IJWTAuth
     {
         var key = _context.Key;
         var issuer = _context.Issuer;
+        var associatedPatientsJson = JsonConvert.SerializeObject(doctorDataForJWT.AssociatedPatients);
+
         var tokenGenerator = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(
@@ -26,6 +29,7 @@ public class Authentication(IAuthentication context) : IJWTAuth
                 new Claim("DateOfBirth", doctorDataForJWT.DateOfBirth!),
                 new Claim("Experience", doctorDataForJWT.Experience!),
                 new Claim("LicenseNumber", doctorDataForJWT.LicenseNumber!),
+                new Claim("AssociatedPatients", associatedPatientsJson)
             ]),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!)), SecurityAlgorithms.HmacSha256Signature),
@@ -41,6 +45,9 @@ public class Authentication(IAuthentication context) : IJWTAuth
     {
         var key = _context.Key;
         var issuer = _context.Issuer;
+        Console.WriteLine(patientDataForJWT.AssociatedDoctors);
+        var associatedDoctorsJson = JsonConvert.SerializeObject(patientDataForJWT.AssociatedDoctors);
+
         var tokenGenerator = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(
@@ -50,12 +57,13 @@ public class Authentication(IAuthentication context) : IJWTAuth
                 new Claim("LastName", patientDataForJWT.LastName!),
                 new Claim("Email", patientDataForJWT.Email!),
                 new Claim("Phone", patientDataForJWT.Phone!),
-                new Claim("DateOfBirth", patientDataForJWT.DateOfBirth!)
+                new Claim("DateOfBirth", patientDataForJWT.DateOfBirth!),
+                new Claim("AssociatedDoctors", associatedDoctorsJson)
             ]),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!)), SecurityAlgorithms.HmacSha256Signature),
             Issuer = issuer,
-            Audience = issuer
+            Audience = issuer,
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenGenerator);

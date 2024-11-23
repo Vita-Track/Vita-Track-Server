@@ -14,7 +14,7 @@ public class DoctorDataForJWT
     public string? DateOfBirth { get; set; }
     public string? Experience { get; set; }
     public string? LicenseNumber { get; set; }
-    public List<PatientModel>? AssociatedPatients { get; set; }
+    public List<string>? AssociatedPatients { get; set; }
 }
 public class PatientDataForJWT
 {
@@ -25,7 +25,7 @@ public class PatientDataForJWT
     public string? Phone { get; set; }
     public string? DateOfBirth { get; set; }
 
-    public List<DoctorModel>? AssociatedDoctors { get; set; }
+    public List<string>? AssociatedDoctors { get; set; }
 }
 public interface IJWTAuth
 {
